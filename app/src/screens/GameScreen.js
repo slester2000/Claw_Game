@@ -125,7 +125,27 @@ export default function GameScreen() {
       Promise.all(unloadPromises).catch(() => {});
     };
   }, []);
+//-----------------------
+// prize Wiggle effect
+//-----------------------
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(prizeWiggle,{
+          toValue:1,
+          duration:800,
+          useNativeDriver:false
+        }),
+        Animated.timing(prizeWiggle,{
+          toValue:1,
+          duration:800,
+          useNativeDriver:false,
 
+        }),
+      ])
+    ).start();
+  },[]);
+      
   // -----------------------------
   // STATE & REFS
   // -----------------------------
@@ -143,6 +163,8 @@ export default function GameScreen() {
   const clawGrip = useRef(new Animated.Value(0)).current;
   const clawShake = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
+  const prizeWiggle = useRef(new Animated.Value(0)).current;
+
   const prizeCounter = useRef(0);
 
   const [prizes, setPrizes] = useState([
@@ -161,6 +183,12 @@ export default function GameScreen() {
     inputRange: [0, 1],
     outputRange: [0, 5],
   });
+
+  const prizeWiggleRotation =
+  prizeWiggle.interpolate({
+    inputRange:[0,1],
+    outputRange:['-3deg', '3deg']
+    });
 
   // -----------------------------
   // MOVEMENT
@@ -445,12 +473,16 @@ export default function GameScreen() {
           prizes.map(
             (p, index) =>
               !p.grabbed && (
-                <Image
+                <Animated.Image
                   key={index}
                   source={prizeImages[p.type]}
                   style={[
                     styles.prizeImage,
-                    { left: p.x, top: gameHeight - PRIZE_FLOOR_OFFSET },
+                    { left: p.x, top: gameHeight - PRIZE_FLOOR_OFFSET,
+                      transform: [{
+                        rotate:prizeWiggleRotation
+                      }]
+                     },
                   ]}
                 />
               )
