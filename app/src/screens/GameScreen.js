@@ -1,6 +1,10 @@
-import { View, Text, StyleSheet, Pressable, Image, Animated } from 'react-native';
-import { useState, useRef, useEffect } from 'react';
 import { Audio } from 'expo-av';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Image, StyleSheet, Text, View } from 'react-native';
+import Controls from "../../../components/Controls";
+import GameStatusBar from '../../../components/GameStatusBar';
+import prizeImages from '../../../components/prizeItems';
+import Claw from "../../../components/Claw"
 
 // --------------------------------------------------
 // CONSTANTS
@@ -27,12 +31,6 @@ const SLIDE_DURATION = 500;
 // --------------------------------------------------
 const makaiName = require('../../../assets/images/makai_neon_transparent.png');
 const clawImg = require('../../../assets/images/claw_transparent.png');
-
-const prizeImages = {
-  deer: require('../../../assets/prizes/deer.png'),
-  kitten: require('../../../assets/prizes/kitten.png'),
-  giraffe: require('../../../assets/prizes/giraffe.png'),
-};
 
 const plushTypes = ['giraffe', 'deer', 'kitten'];
 
@@ -422,9 +420,14 @@ export default function GameScreen() {
       <View style={styles.header}>
         <Image source={makaiName} style={styles.logo} />
         <Text style={styles.title}>Makai Claw Game</Text>
-        <Text style={styles.score}>Score: {score}</Text>
+        
+        <GameStatusBar 
+          score={score}
+          resetGame={resetGame}
+          />
       </View>
 
+      
       {/* 🟨 GAME AREA (claw, rope, floor prizes, attached prize) */}
       <View
         style={styles.gameArea}
@@ -444,29 +447,14 @@ export default function GameScreen() {
           }).start();
         }}
       >
-        {/* ROPE */}
-        <Animated.View
-          style={[
-            styles.rope,
-            {
-              height: clawY,
-              left: clawX + 23,
-            },
-          ]}
-        />
 
-        {/* CLAW IMAGE */}
-        <Animated.Image
-          source={clawImg}
-          style={[
-            styles.claw,
-            {
-              left: clawX,
-              top: clawY,
-              transform: [{ scaleY: clawScaleY }, { translateX: shakeOffset }],
-            },
-          ]}
-        />
+      <Claw
+        clawImg ={clawImg}
+        clawX ={clawX}
+        clawY ={clawY}
+        clawScaleY={clawScaleY}
+        shakeOffset={shakeOffset}
+      />
 
         {/* FLOOR PRIZES */}
         {gameHeight !== null &&
@@ -553,36 +541,19 @@ export default function GameScreen() {
         ))}
       </View>
 
-      {/* CONTROLS + RESET */}
-      <View style={styles.controlsRow}>
-        <View style={styles.controls}>
-          <Pressable
-            style={styles.button}
-            onPress={moveLeft}
-            onPressIn={() => setLeftHeld(true)}
-            onPressOut={() => setLeftHeld(false)}
-          >
-            <Text style={styles.btnText}>◀</Text>
-          </Pressable>
+        <View style={styles.controlsRow}></View>
 
-          <Pressable style={styles.button} onPress={dropClaw}>
-            <Text style={styles.btnText}>▼</Text>
-          </Pressable>
+        <Controls
+          onLeftTap={moveLeft}
+          onLeftPressIn={() => setLeftHeld(true)}
+          onLeftPressOut={() => setLeftHeld(false)}
 
-          <Pressable
-            style={styles.button}
-            onPress={moveRight}
-            onPressIn={() => setRightHeld(true)}
-            onPressOut={() => setRightHeld(false)}
-          >
-            <Text style={styles.btnText}>▶</Text>
-          </Pressable>
-        </View>
+          onRightTap={moveRight}
+          onRightPressIn={() => setRightHeld(true)}
+          onRightPressOut={() => setRightHeld(false)}
 
-        <Pressable style={styles.resetButton} onPress={resetGame}>
-          <Text style={styles.resetText}>Reset</Text>
-        </Pressable>
-      </View>
+          onDrop={dropClaw}
+        />
 
       <Text style={styles.versionText}>Version 1.0</Text>
     </View>
@@ -630,18 +601,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#555',
   },
-  claw: {
-    width: CLAW_IMAGE_SIZE,
-    height: CLAW_IMAGE_SIZE,
-    position: 'absolute',
-  },
-  rope: {
-    width: 4,
-    backgroundColor: 'silver',
-    position: 'absolute',
-    top: 0,
-    zIndex: 0,
-  },
+
   prizeImage: {
     width: PRIZE_IMAGE_SIZE,
     height: PRIZE_IMAGE_SIZE,
