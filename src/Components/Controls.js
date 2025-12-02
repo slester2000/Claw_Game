@@ -47,7 +47,7 @@ export default function Controls({
 
 const styles = StyleSheet.create({
   controls: {
-    height: 120,
+    height: 50,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -55,8 +55,9 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   button: {
+    height:50,
     backgroundColor: '#444',
-    padding: 20,
+    padding:5,
     borderRadius: 10,
   },
   btnText: {

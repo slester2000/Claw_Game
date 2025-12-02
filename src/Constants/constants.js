@@ -1,0 +1,63 @@
+//Game Layout
+const PRIZE_FLOOR_OFFSET = 50;
+
+
+//Prize Settings
+const PRIZE_WIDTH = 40;
+const PRIZE_IMAGE_SIZE = 50;
+const MIN_PRIZE_SPACING = 50;
+
+
+//Claw Settings
+const INITIAL_CLAW_Y = 20;
+const CLAW_WIDTH = 40;
+const CLAW_IMAGE_SIZE = 50;
+const DROP_DURATION = 1200;
+const LIFT_DURATION = 1200;
+const GRIP_CLOSE_DURATION = 150;
+const GRIP_OPEN_DURATION = 150;
+
+
+//Anamation setting/timing
+const MOVE_STEP = 10;
+const HOLD_INTERVAL_MS = 100;
+
+
+//Rope
+const SHAKE_DURATION = 50;
+const SLIDE_DURATION = 500;
+
+
+export {
+  PRIZE_FLOOR_OFFSET,
+  PRIZE_WIDTH,
+  PRIZE_IMAGE_SIZE,
+  MIN_PRIZE_SPACING,
+  INITIAL_CLAW_Y,
+  CLAW_WIDTH,
+  CLAW_IMAGE_SIZE,
+  DROP_DURATION,
+  LIFT_DURATION,
+  GRIP_CLOSE_DURATION,
+  GRIP_OPEN_DURATION,
+  MOVE_STEP,
+  HOLD_INTERVAL_MS,
+  SHAKE_DURATION,
+  SLIDE_DURATION,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

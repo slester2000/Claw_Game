@@ -1,17 +1,7 @@
-import {View,StyleSheet, _View} from 'react-native';
-import GameScreen from '../src/screens/GameScreen';
+import { Redirect } from "expo-router";
 
-export default function Index(){
-  return(
-    <View style={styles.container}>
-      <GameScreen />
-    </View>
-  );
+export default function Index() {
+  // Send user to the game screen
+  return <Redirect href="/screens/GameScreen" />;
 }
 
-const styles=StyleSheet.create({
-  container:{
-    flex:1,
-    backgroundColor:"#111",
-  },
-});
