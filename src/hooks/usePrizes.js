@@ -31,10 +31,16 @@ export default function usePrizes(gameWidth) {
     { x: 240, grabbed: false, type: "kitten" },
   ]);
 
-  const [grabbedIndex, setGrabbedIndex] = useState(null);
+  const grabbedIndexRef = useRef(null);
+  const [grabbedIndex, _setGrabbedIndex] = useState(null);
   const [slidingPrize, setSlidingPrize] = useState(null);
   const [wonPrize, setWonPrize] = useState([]);
   const [score, setScore] = useState(0);
+
+const setGrabbedIndex= (value) =>{
+  grabbedIndexRef.current =value;
+  _setGrabbedIndex(value);
+}
 
   const detectCollision = (clawX, clawWidth) => {
     const clawLeft = clawX;
@@ -53,6 +59,7 @@ export default function usePrizes(gameWidth) {
         return updated;
       });
       setGrabbedIndex(hitIndex);
+  
     }
   };
 
@@ -68,7 +75,6 @@ export default function usePrizes(gameWidth) {
 
   const awardPrize = index => {
     const type = prizes[index].type;
-
     setWonPrize(prev => [
       ...prev,
       { id: prizeCounter.current++, type },
@@ -81,6 +87,7 @@ export default function usePrizes(gameWidth) {
   return {
     prizes,
     grabbedIndex,
+    grabbedIndexRef,
     slidingPrize,
     wonPrize,
     score,

@@ -1,11 +1,15 @@
-import React from 'react';
-import {StyleSheet,Animated} from 'react-native'
+import { Animated, StyleSheet } from 'react-native';
+import { PRIZE_IMAGE_SIZE } from '../Constants/constants';
 
 
 
 
 export default function PrizeRow({prizes,prizeImages,gameHeight,prizeWiggleRotation})
-{ return(
+
+{ if (!gameHeight) return null;
+  
+
+return(
 <>
   {prizes.map((p, index) =>
     !p.grabbed && (
@@ -14,7 +18,8 @@ export default function PrizeRow({prizes,prizeImages,gameHeight,prizeWiggleRotat
         source={prizeImages[p.type]}
         style={[
           styles.prizeImage,
-          { left: p.x, top: gameHeight - 50 },
+          { left: p.x, bottom:gameHeight-15
+           },
           {transform: [{rotate:prizeWiggleRotation}]}
         ]}
       />
@@ -26,8 +31,9 @@ export default function PrizeRow({prizes,prizeImages,gameHeight,prizeWiggleRotat
 
 const styles = StyleSheet.create({
     prizeImage: {
-    width: 50,
-    height: 50,
+    width: PRIZE_IMAGE_SIZE,
+    height: PRIZE_IMAGE_SIZE,
     resizeMode: "contain",
-    position: "absolute",},
+    position: 'absolute',
+  },
 })

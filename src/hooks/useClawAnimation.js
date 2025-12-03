@@ -9,6 +9,7 @@ import {
   SHAKE_DURATION,
   SLIDE_DURATION,
   PRIZE_FLOOR_OFFSET,
+  CLAW_WIDTH
 } from "../Constants/constants";
 
 export default function useClawAnimation(
@@ -17,7 +18,7 @@ export default function useClawAnimation(
   awardPrize,
   respawnPrize,
   setSlidingPrize,
-  grabbedIndex,
+  grabbedIndexRef,
   setGrabbedIndex,
   sounds
 ) {
@@ -60,29 +61,33 @@ export default function useClawAnimation(
         useNativeDriver: false,
       }).start();
 
-      detectCollision(clawX);
+      detectCollision(clawX,CLAW_WIDTH);
 
       raiseClaw(clawX);
     });
   };
 
-  const raiseClaw = clawX => {
+  const raiseClaw = (clawX) => {
     Animated.timing(clawY, {
       toValue: INITIAL_CLAW_Y,
       duration: LIFT_DURATION,
       useNativeDriver: false,
     }).start(() => {
-      if (grabbedIndex !== null) {
-        awardPrize(grabbedIndex);
-        slideAnim.setValue(0);
+      if (grabbedIndexRef.current !== null) {
 
+        const index =grabbedIndexRef.current;
+
+        awardPrize(index);
+        slideAnim.setValue(0);
+      
         Animated.timing(slideAnim, {
           toValue: 1,
           duration: SLIDE_DURATION,
           useNativeDriver: false,
         }).start(() => {
-          respawnPrize(grabbedIndex);
+          respawnPrize(index);
           setSlidingPrize(null);
+          setGrabbedIndex(null)
         });
 
         sounds?.win?.();

@@ -1,5 +1,5 @@
 import { Audio } from "expo-av";
-import { useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Animated, Image, StyleSheet, Text, View } from "react-native";
 
 import Claw from "../../src/Components/Claw";
@@ -10,8 +10,10 @@ import PrizeRow from "../../src/Components/PrizeRow";
 
 import {
   CLAW_WIDTH,
+  DRAWER_HEIGHT,
   INITIAL_CLAW_Y,
   PRIZE_IMAGE_SIZE,
+  PRIZE_FLOOR_OFFSET,
 } from "../../src/Constants/constants";
 import prizeImages from "../../src/Constants/prizeItems";
 
@@ -25,6 +27,7 @@ import usePrizes from "../../src/hooks/usePrizes";
 export default function GameScreen() {
   const [gameWidth, setGameWidth] = useState(null);
   const [gameHeight, setGameHeight] = useState(null);
+  const [floorY, setFloorY] =useState(null);
 
   // -----------------------------------------------------
   // SOUND INITIALIZATION
@@ -75,6 +78,7 @@ export default function GameScreen() {
   const {
     prizes,
     grabbedIndex,
+    grabbedIndexRef,
     slidingPrize,
     wonPrize,
     score,
@@ -99,7 +103,7 @@ export default function GameScreen() {
     awardPrize,
     respawnPrize,
     setSlidingPrize,
-    grabbedIndex,
+    grabbedIndexRef,
     setGrabbedIndex,
     {
       drop: () => dropSound.current?.replayAsync(),
@@ -155,6 +159,7 @@ export default function GameScreen() {
       {/* Game Area */}
       <View
         style={styles.gameArea}
+        
         onLayout={(e) => {
           const width = e.nativeEvent.layout.width;
           const height = e.nativeEvent.layout.height;
@@ -162,6 +167,7 @@ export default function GameScreen() {
           setGameHeight(height);
 
           setClawX(width / 2 - CLAW_WIDTH / 2);
+          
 
           Animated.timing(clawY, {
             toValue: INITIAL_CLAW_Y,
@@ -169,6 +175,8 @@ export default function GameScreen() {
             useNativeDriver: false,
           }).start();
         }}
+        
+        
       >
         {/* Claw */}
         <Claw
@@ -252,7 +260,16 @@ export default function GameScreen() {
         onRightPressIn={() => setRightHeld(true)}
         onRightPressOut={() => setRightHeld(false)}
         onDrop={() => dropClaw(clawX)}
+
+        
       />
+    <View
+    style={{ width: "100%", height: 3, backgroundColor: "red", position: "absolute" }}
+    onLayout={e => {
+    const y = e.nativeEvent.layout.y;
+    console.log("FLOOR MARKER Y:", y);
+  }}
+/>
 
       <Text style={styles.version}>Version 1.0</Text>
     </View>
@@ -267,7 +284,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 40,
     backgroundColor: "#000",
+    position:'relative',
   },
+
   header: {
     alignItems: "center",
     marginBottom: 10,
@@ -289,9 +308,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     borderRadius: 10,
     overflow: "hidden",
-    marginBottom: 10,
+    marginBottom: 90,
     borderWidth: 2,
     borderColor: "#555",
+    paddingBottom:DRAWER_HEIGHT+20,
+    zIndex:1,
+    
   },
   prizeImage: {
     width: PRIZE_IMAGE_SIZE,

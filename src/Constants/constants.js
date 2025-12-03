@@ -27,6 +27,9 @@ const HOLD_INTERVAL_MS = 100;
 const SHAKE_DURATION = 50;
 const SLIDE_DURATION = 500;
 
+//Drawer layout
+const DRAWER_HEIGHT = 70;
+
 
 export {
   PRIZE_FLOOR_OFFSET,
@@ -44,6 +47,7 @@ export {
   HOLD_INTERVAL_MS,
   SHAKE_DURATION,
   SLIDE_DURATION,
+  DRAWER_HEIGHT,
 };
 
 
