@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { MOVE_STEP, HOLD_INTERVAL_MS, CLAW_WIDTH } from "../Constants/constants";
 
-export default function useClawMovement(gameWidth) {
+export default function useClawMovement({gameWidth, isDropping}) {
   const [clawX, setClawX] = useState(0);
   const [leftHeld, setLeftHeld] = useState(false);
   const [rightHeld, setRightHeld] = useState(false);
@@ -10,16 +10,19 @@ export default function useClawMovement(gameWidth) {
     if (!gameWidth) return;
     const minX = 0;
     setClawX(prev => Math.max(prev - MOVE_STEP, minX));
+  
   };
 
   const moveRight = () => {
     if (!gameWidth) return;
     const maxX = gameWidth - CLAW_WIDTH;
     setClawX(prev => Math.min(prev + MOVE_STEP, maxX));
+    
   };
 
   useEffect(() => {
     let interval = null;
+    if(isDropping) return;
 
     if (leftHeld) interval = setInterval(moveLeft, HOLD_INTERVAL_MS);
     else if (rightHeld) interval = setInterval(moveRight, HOLD_INTERVAL_MS);

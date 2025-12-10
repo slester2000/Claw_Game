@@ -8,7 +8,8 @@ export default function Controls({
   onRightPressIn, 
   onRightPressOut,
   onRightTap,
-  onDrop 
+  onDrop,
+  disabled,
 }) {
   return (
     <View style={styles.controls}>
@@ -19,6 +20,7 @@ export default function Controls({
         onPress={onLeftTap}
         onPressIn={onLeftPressIn}
         onPressOut={onLeftPressOut}
+        disabled ={disabled}
       >
         <Text style={styles.btnText}>◀</Text>
       </Pressable>
@@ -27,6 +29,7 @@ export default function Controls({
       <Pressable 
         style={styles.button}
         onPress={onDrop}
+        disabled={disabled}
       >
         <Text style={styles.btnText}>▼</Text>
       </Pressable>
@@ -37,6 +40,7 @@ export default function Controls({
         onPress={onRightTap}
         onPressIn={onRightPressIn}
         onPressOut={onRightPressOut}
+        disabled={disabled}
       >
         <Text style={styles.btnText}>▶</Text>
       </Pressable>
@@ -47,23 +51,26 @@ export default function Controls({
 
 const styles = StyleSheet.create({
   controls: {
-    height: 50,
+    height: 100,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     backgroundColor: '#111',
-    paddingBottom: 20,
   },
   button: {
-    height:50,
+    height:75,
     backgroundColor: '#444',
-    padding:5,
+    padding:20,
     borderRadius: 10,
+    marginBottom:15,
+
   },
   btnText: {
     color: 'white',
     fontSize: 28,
     fontWeight: 'bold',
+    
+    
   },
 });
 

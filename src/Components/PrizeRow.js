@@ -18,7 +18,7 @@ return(
         source={prizeImages[p.type]}
         style={[
           styles.prizeImage,
-          { left: p.x, bottom:gameHeight-15
+          { left: p.x, bottom:0
            },
           {transform: [{rotate:prizeWiggleRotation}]}
         ]}

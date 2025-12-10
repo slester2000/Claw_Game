@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 90,        // 🔹 sits above the controls bar – tweak as needed
+    bottom: 140,        // 🔹 sits above the controls bar – tweak as needed
     zIndex: 50,
     paddingHorizontal: 20,
   },

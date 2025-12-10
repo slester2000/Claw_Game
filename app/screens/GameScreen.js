@@ -27,7 +27,7 @@ import usePrizes from "../../src/hooks/usePrizes";
 export default function GameScreen() {
   const [gameWidth, setGameWidth] = useState(null);
   const [gameHeight, setGameHeight] = useState(null);
-  const [floorY, setFloorY] =useState(null);
+  const [isDropping, setIsDropping]= useState(false);
 
   // -----------------------------------------------------
   // SOUND INITIALIZATION
@@ -72,7 +72,10 @@ export default function GameScreen() {
     rightHeld,
     setLeftHeld,
     setRightHeld,
-  } = useClawMovement(gameWidth);
+  } = useClawMovement({
+    gameWidth,
+    isDropping
+  });
 
   // 🟨 2. Prize Logic
   const {
@@ -96,21 +99,31 @@ export default function GameScreen() {
     clawShake,
     slideAnim,
     prizeWiggle,
-    dropClaw,
-  } = useClawAnimation(
+    dropClaw:dropClawRaw,
+  } = useClawAnimation({
     gameHeight,
+    clawX,
+    onComplete:() => setIsDropping(false),
     detectCollision,
     awardPrize,
     respawnPrize,
     setSlidingPrize,
     grabbedIndexRef,
     setGrabbedIndex,
-    {
+    sounds:{
       drop: () => dropSound.current?.replayAsync(),
       grab: () => grabSound.current?.replayAsync(),
       win: () => winSound.current?.replayAsync(),
-    }
+    },
+  }
+  
   );
+
+  const dropClaw = () =>{
+    if (isDropping) return;
+    setIsDropping(true);
+    dropClawRaw();
+  };
 
   // Prize wiggle visual rotation
   const prizeWiggleRotation = prizeWiggle.interpolate({
@@ -138,6 +151,8 @@ export default function GameScreen() {
     respawnPrize(1);
     respawnPrize(2);
   };
+
+  
 
   // -----------------------------------------------------
   // RENDER
@@ -176,8 +191,12 @@ export default function GameScreen() {
           }).start();
         }}
         
-        
       >
+
+        <View style={styles.ledStripLeft} />
+        <View style={styles.ledStripRight} />
+
+      <View style = {styles.glassPanel}>
         {/* Claw */}
         <Claw
           clawImg={require("../../assets/images/claw_transparent.png")}
@@ -223,6 +242,8 @@ export default function GameScreen() {
             position: "absolute",
             top: 120,
             left: clawX,
+            zIndex:9999,
+            elevation:20,
             transform: [
               {
                 translateX: slideAnim.interpolate({
@@ -247,6 +268,7 @@ export default function GameScreen() {
           }}
         />
       )}
+      </View>
 
       {/* Drawer */}
       <Drawer wonPrize={wonPrize} prizeImages={prizeImages} />
@@ -260,6 +282,7 @@ export default function GameScreen() {
         onRightPressIn={() => setRightHeld(true)}
         onRightPressOut={() => setRightHeld(false)}
         onDrop={() => dropClaw(clawX)}
+        disabled={isDropping}
 
         
       />
@@ -304,9 +327,11 @@ const styles = StyleSheet.create({
   },
   gameArea: {
     flex: 1,
-    backgroundColor: "#222",
+    backgroundColor: "#1A4CFF",
+    borderWidth:12,
+    borderColor:"#0A2A99",
     marginHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 20,
     overflow: "hidden",
     marginBottom: 90,
     borderWidth: 2,
@@ -327,4 +352,32 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 6,
   },
+  glassPanel: {
+  flex: 1,
+  backgroundColor: "rgba(255,255,255,0.1)",
+  borderWidth: 2,
+  borderColor: "rgba(255,255,255,0.3)",
+  borderRadius: 12,
+  overflow: "hidden",
+},
+
+ledStripLeft: {
+  position: "absolute",
+  left: 0,
+  top: 0,
+  bottom: 0,
+  width: 6,
+  backgroundColor: "#00E5FF",
+},
+
+ledStripRight: {
+  position: "absolute",
+  right: 0,
+  top: 0,
+  bottom: 0,
+  width: 6,
+  backgroundColor: "#00E5FF",
+},
+
+
 });

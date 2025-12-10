@@ -12,7 +12,7 @@ import {
   CLAW_WIDTH
 } from "../Constants/constants";
 
-export default function useClawAnimation(
+export default function useClawAnimation({
   gameHeight,
   detectCollision,
   awardPrize,
@@ -20,20 +20,23 @@ export default function useClawAnimation(
   setSlidingPrize,
   grabbedIndexRef,
   setGrabbedIndex,
-  sounds
-) {
+  sounds,
+  onComplete,
+  clawX,
+}) {
   const clawY = useRef(new Animated.Value(INITIAL_CLAW_Y)).current;
   const clawGrip = useRef(new Animated.Value(0)).current;
   const clawShake = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const prizeWiggle = useRef(new Animated.Value(0)).current;
 
-  const dropClaw = clawX => {
+  const dropClaw = () => {
     if (!gameHeight) return;
+    console.log(clawX)
 
     sounds?.drop?.();
 
-    const bottom = gameHeight - PRIZE_FLOOR_OFFSET;
+    const bottom = gameHeight - PRIZE_FLOOR_OFFSET; //update bottom floor height,
 
     Animated.timing(clawY, {
       toValue: bottom,
@@ -62,6 +65,8 @@ export default function useClawAnimation(
       }).start();
 
       detectCollision(clawX,CLAW_WIDTH);
+      console.log('dropClaw clawX:', clawX)
+      
 
       raiseClaw(clawX);
     });
@@ -96,7 +101,9 @@ export default function useClawAnimation(
           toValue: 0,
           duration: GRIP_OPEN_DURATION,
           useNativeDriver: false,
-        }).start();
+        }).start(() =>{
+          onComplete && onComplete();
+        });
 
         setGrabbedIndex(null);
         return;
@@ -107,7 +114,9 @@ export default function useClawAnimation(
         toValue: 0,
         duration: GRIP_OPEN_DURATION,
         useNativeDriver: false,
-      }).start();
+      }).start(() => {
+        onComplete && onComplete();
+      });
     });
   };
 
